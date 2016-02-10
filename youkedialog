@@ -1,0 +1,132 @@
+#include "stdafx.h"
+#include "Newtravel.h"
+#include "YoukeDialog.h"
+#include "NewtravelSet.h"
+#include "YoukeSet.h"
+#include "YoukefindDialog.h"
+#include "YoukeaddDialog.h"
+#include "AddyoukeDialog.h"
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CYoukeDialog dialog
+
+
+CYoukeDialog::CYoukeDialog(CWnd* pParent /*=NULL*/)
+	: CDialog(CYoukeDialog::IDD, pParent)
+{
+	//{{AFX_DATA_INIT(CYoukeDialog)
+	m_yage = _T("");
+	m_ycost = _T("");
+	m_yiden = _T("");
+	m_yname = _T("");
+	m_ytraffic = _T("");
+	m_yviewstyle = _T("");
+	m_yway = _T("");
+	m_findyname = _T("");
+	//}}AFX_DATA_INIT
+}
+
+
+void CYoukeDialog::DoDataExchange(CDataExchange* pDX)
+{
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CYoukeDialog)
+	DDX_Text(pDX, IDC_EDIT_yage, m_yage);
+	DDX_Text(pDX, IDC_EDIT_ycost, m_ycost);
+	DDX_Text(pDX, IDC_EDIT_yiden, m_yiden);
+	DDX_Text(pDX, IDC_EDIT_yname, m_yname);
+	DDX_Text(pDX, IDC_EDIT_ytraffic, m_ytraffic);
+	DDX_Text(pDX, IDC_EDIT_yviewstyle, m_yviewstyle);
+	DDX_Text(pDX, IDC_EDIT_yway, m_yway);
+	DDX_Text(pDX, IDC_EDIT_FINDYNAME, m_findyname);
+	//}}AFX_DATA_MAP
+}
+
+
+BEGIN_MESSAGE_MAP(CYoukeDialog, CDialog)
+	//{{AFX_MSG_MAP(CYoukeDialog)
+	ON_BN_CLICKED(IDC_BUTTON_ydelete, OnBUTTONydelete)
+	ON_BN_CLICKED(IDC_BUTTON_yfind, OnBUTTONyfind)
+	ON_BN_CLICKED(IDC_BUTTON_yadd, OnBUTTONyadd)
+	ON_BN_CLICKED(IDC_BUTTON_yupdate, OnBUTTONyupdate)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CYoukeDialog message handlers
+
+void CYoukeDialog::OnBUTTONydelete() 
+{
+	// TODO: Add your control notification handler code here
+UpdateData(TRUE);
+	CYoukeSet mset;
+	mset.Open();
+	mset.MoveFirst();
+	while(!mset.IsEOF())
+	{
+		if(mset.m_pname==m_yname)
+			break;
+		mset.MoveNext();
+	}
+	mset.Delete();
+	mset.Close();
+	MessageBox("删除成功！");
+}
+
+void CYoukeDialog::OnBUTTONyfind() 
+{
+	// TODO: Add your control notification handler code here
+UpdateData(TRUE);
+	CYoukefindDialog cdlg;
+	CYoukeDialog dlg;
+	CYoukeSet mset;
+	mset.Open();
+	mset.MoveFirst();
+	while(!mset.IsEOF())
+	{
+		if(m_findyname==mset.m_pname)
+			break;
+		mset.MoveNext();
+	}
+	if(mset.IsEOF())
+	{
+		MessageBox("没有找到相应记录！");
+		return;
+	}
+	cdlg.m_yage=mset.m_page;
+	cdlg.m_ycost=mset.m_pcost;
+	cdlg.m_yname=mset.m_pname; 
+	cdlg.m_ytraffic=mset.m_ptraffic;
+	cdlg.m_yviewstyle=mset.m_viewstyle;
+	cdlg.m_yway=mset.m_pway;
+    cdlg.m_yiden=mset.m_piden;
+	cdlg.DoModal();
+	UpdateData(FALSE);
+	mset.Close();	
+}
+
+void CYoukeDialog::OnBUTTONyadd() 
+{
+	// TODO: Add your control notification handler code here
+	CYoukeaddDialog dlg;
+	dlg.DoModal();
+}
+
+void CYoukeDialog::OnBUTTONyupdate() 
+{
+	// TODO: Add your control notification handler code here
+CAddyoukeDialog dlg;
+	dlg.m_yage=m_yage;
+	dlg.m_ycost=m_ycost;
+	dlg.m_yiden=m_yiden;
+	dlg.m_yname=m_yname;
+	dlg.m_ytraffic=m_ytraffic;
+	dlg.m_yviewstyle=m_yviewstyle;
+	dlg.m_yway=m_yway;
+dlg.DoModal();	
+}
