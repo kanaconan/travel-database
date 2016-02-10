@@ -1,0 +1,65 @@
+#include "stdafx.h"
+#include "Newtravel.h"
+#include "NewtravelSet.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CNewtravelSet implementation
+
+IMPLEMENT_DYNAMIC(CNewtravelSet, CRecordset)
+
+CNewtravelSet::CNewtravelSet(CDatabase* pdb)
+	: CRecordset(pdb)
+{
+	//{{AFX_FIELD_INIT(CNewtravelSet)
+	m_viewname = _T("");
+	m_viewstyle = _T("");
+	m_viewday = _T("");
+	m_viewseason = _T("");
+	m_viewway = _T("");
+	m_nFields = 5;
+	//}}AFX_FIELD_INIT
+	m_nDefaultType = snapshot;
+}
+
+CString CNewtravelSet::GetDefaultConnect()
+{
+	return _T("ODBC;DSN=newtravel");
+}
+
+CString CNewtravelSet::GetDefaultSQL()
+{
+	return _T("[景点信息]");
+}
+
+void CNewtravelSet::DoFieldExchange(CFieldExchange* pFX)
+{
+	//{{AFX_FIELD_MAP(CNewtravelSet)
+	pFX->SetFieldType(CFieldExchange::outputColumn);
+	RFX_Text(pFX, _T("[viewname]"), m_viewname);
+	RFX_Text(pFX, _T("[viewstyle]"), m_viewstyle);
+	RFX_Text(pFX, _T("[viewday]"), m_viewday);
+	RFX_Text(pFX, _T("[viewseason]"), m_viewseason);
+	RFX_Text(pFX, _T("[viewway]"), m_viewway);
+	//}}AFX_FIELD_MAP
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CNewtravelSet diagnostics
+
+#ifdef _DEBUG
+void CNewtravelSet::AssertValid() const
+{
+	CRecordset::AssertValid();
+}
+
+void CNewtravelSet::Dump(CDumpContext& dc) const
+{
+	CRecordset::Dump(dc);
+}
+#endif //_DEBUG
