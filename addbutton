@@ -1,0 +1,68 @@
+#include "stdafx.h"
+#include "Newtravel.h"
+#include "ViewaddDialog.h"
+
+#include "NewtravelSet.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CViewaddDialog dialog
+
+
+CViewaddDialog::CViewaddDialog(CWnd* pParent /*=NULL*/)
+	: CDialog(CViewaddDialog::IDD, pParent)
+{
+	//{{AFX_DATA_INIT(CViewaddDialog)
+	m_viewday = _T("");
+	m_viewname = _T("");
+	m_viewseason = _T("");
+	m_viewstyle = _T("");
+	m_viewway = _T("");
+	//}}AFX_DATA_INIT
+}
+
+
+void CViewaddDialog::DoDataExchange(CDataExchange* pDX)
+{
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CViewaddDialog)
+	DDX_Text(pDX, IDC_EDIT_viewday, m_viewday);
+	DDX_Text(pDX, IDC_EDIT_viewname, m_viewname);
+	DDX_Text(pDX, IDC_EDIT_viewseason, m_viewseason);
+	DDX_Text(pDX, IDC_EDIT_viewstyle, m_viewstyle);
+	DDX_Text(pDX, IDC_EDIT_viewway, m_viewway);
+	//}}AFX_DATA_MAP
+}
+
+
+BEGIN_MESSAGE_MAP(CViewaddDialog, CDialog)
+	//{{AFX_MSG_MAP(CViewaddDialog)
+	ON_BN_CLICKED(IDC_BUTTON_viewadd, OnBUTTONviewadd)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CViewaddDialog message handlers
+
+void CViewaddDialog::OnBUTTONviewadd() 
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	CNewtravelSet mset;
+	mset.Open();
+	mset.AddNew();
+	mset.m_viewday=m_viewday;
+	mset.m_viewname=m_viewname;
+	mset.m_viewseason=m_viewseason;
+	mset.m_viewstyle=m_viewstyle;
+	mset.m_viewway=m_viewway;
+	mset.Update();
+	mset.Requery();
+	mset.Close();
+	MessageBox("添加成功！");
+}
