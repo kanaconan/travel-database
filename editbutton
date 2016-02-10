@@ -1,0 +1,81 @@
+#include "stdafx.h"
+#include "Newtravel.h"
+#include "EditDialog.h"
+#include "NewtravelSet.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CEditDialog dialog
+
+
+CEditDialog::CEditDialog(CWnd* pParent /*=NULL*/)
+	: CDialog(CEditDialog::IDD, pParent)
+{
+	//{{AFX_DATA_INIT(CEditDialog)
+	m_viewname = _T("");
+	m_viewseason = _T("");
+	m_viewstyle = _T("");
+	m_viewday = _T("");
+	m_viewway = _T("");
+	//}}AFX_DATA_INIT
+}
+
+
+void CEditDialog::DoDataExchange(CDataExchange* pDX)
+{
+	CDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CEditDialog)
+	DDX_Text(pDX, IDC_EDIT_viewname, m_viewname);
+	DDX_Text(pDX, IDC_EDIT_viewseason, m_viewseason);
+	DDX_Text(pDX, IDC_EDIT_viewstyle, m_viewstyle);
+	DDX_Text(pDX, IDC_EDIT_viewday, m_viewday);
+	DDX_Text(pDX, IDC_EDIT_viewway, m_viewway);
+	//}}AFX_DATA_MAP
+}
+
+
+BEGIN_MESSAGE_MAP(CEditDialog, CDialog)
+	//{{AFX_MSG_MAP(CEditDialog)
+	ON_BN_CLICKED(IDC_BUTTON_vieweditok, OnBUTTONvieweditok)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CEditDialog message handlers
+
+void CEditDialog::OnBUTTONvieweditok() 
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	CEditDialog dlg;
+	CNewtravelSet mset;
+	mset.Open();
+	mset.MoveFirst();
+	while(!mset.IsEOF())
+	{
+		if(mset.m_viewname==m_viewname)
+			break;
+		mset.MoveNext();
+	}
+	dlg.m_viewday=mset.m_viewday;
+	dlg.m_viewname=mset.m_viewname;
+	dlg.m_viewseason=mset.m_viewseason;
+	dlg.m_viewstyle=mset.m_viewstyle;
+	dlg.m_viewway=mset.m_viewway;
+
+	mset.Edit();
+	mset.m_viewday=m_viewday;
+	mset.m_viewname=m_viewname;
+	mset.m_viewseason=m_viewseason;
+	mset.m_viewstyle=m_viewstyle;
+	mset.m_viewway=m_viewway;
+	mset.Update();
+	mset.Requery();
+	mset.Close();
+	MessageBox("修改成功！");
+}
